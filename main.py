@@ -16,6 +16,20 @@ class TaskManager:
     def __init__(self, filename="tasks.txt"):
         self.filename = filename
 
+    def load_tasks(self):
+        tasks_list = []
+        try:
+            with open(self.filename, "r", encoding="utf-8") as f:
+                for line in f:
+                    parts = line.strip().split("|")
+                    if len(parts) == 5:
+                        t_id, desc, prio, date, done = parts
+                        task = Task(int(t_id), desc, int(prio), date, done == 'True')
+                        tasks_list.append(task)
+        except FileNotFoundError:
+            return []
+        return tasks_list
+
     def save_to_file(self, task):
         with open(self.filename, "a", encoding="utf-8") as f:
             line = f"{task.task_id}|{task.description}|{task.priority}|{task.created_at}|{task.is_done}\n"
@@ -25,9 +39,15 @@ class TaskManager:
 if __name__ == "__main__":
     manager = TaskManager()
 
+    print("---tasks from the file ---")
+    current_tasks = manager.load_tasks()
+    for t in current_tasks:
+        print(t)
+
     print("--- Creating task ---")
     desc = input("What needs to be done? ")
     prio = input("What is the priority (1-5)? ")
 
-    user_task = Task(1, desc, prio)
-    manager.save_to_file(user_task)
+    new_id = len(current_tasks) + 1
+    new_task = Task(new_id, desc, prio)
+    manager.save_to_file(new_task)
