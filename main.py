@@ -24,5 +24,10 @@ class TaskManager:
 
 if __name__ == "__main__":
     manager = TaskManager()
-    new_task = Task(1, "Study ООP", 3)
-    manager.save_to_file(new_task)
+
+    print("--- Creating task ---")
+    desc = input("What needs to be done? ")
+    prio = input("What is the priority (1-5)? ")
+
+    user_task = Task(1, desc, prio)
+    manager.save_to_file(user_task)
