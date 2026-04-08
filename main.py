@@ -30,6 +30,15 @@ class TaskManager:
             return []
         return tasks_list
 
+    def list_tasks_sorted(self, sort_by="priority"):
+        tasks = self.load_tasks()
+        if sort_by == "priority":
+            tasks.sort(key=lambda x: x.priority)
+        elif sort_by == "date":
+            tasks.sort(key=lambda x: x.created_at)
+        
+        return tasks
+
     def save_to_file(self, task):
         with open(self.filename, "a", encoding="utf-8") as f:
             line = f"{task.task_id}|{task.description}|{task.priority}|{task.created_at}|{task.is_done}\n"
