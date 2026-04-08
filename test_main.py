@@ -1,5 +1,5 @@
 import pytest
-from main import Task
+from main import Task, TaskManager
 
 @pytest.fixture
 def sample_task():
@@ -14,3 +14,17 @@ def test_task_initialization(sample_task):
 def test_task_to_line(sample_task):
     expected_line = "1|Test Task|3|2026-04-08 12:00:00|False\n"
     assert sample_task.to_line() == expected_line
+
+
+@pytest.fixture
+def temp_manager(tmp_path):
+    db_file = tmp_path / "test_tasks.txt"
+    return TaskManager(str(db_file))
+
+def test_save_and_load_tasks(temp_manager):
+    task = Task(1, "Buy milk", 2)
+    temp_manager.save_to_file(task)
+    
+    tasks = temp_manager.load_tasks()
+    assert len(tasks) == 1
+    assert tasks[0].description == "Buy milk"
