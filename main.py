@@ -81,16 +81,52 @@ class TaskManager:
 
 if __name__ == "__main__":
     manager = TaskManager()
-
-    print("---tasks from the file ---")
-    current_tasks = manager.load_tasks()
-    for t in current_tasks:
-        print(t)
-
-    print("--- Creating task ---")
-    desc = input("What needs to be done? ")
-    prio = input("What is the priority (1-5)? ")
-
-    new_id = max([t.task_id for t in current_tasks], default=0) + 1
-    new_task = Task(new_id, desc, prio)
-    manager.save_to_file(new_task)
+    
+    while True:
+        print("\n=== TASK MANAGEMENT SYSTEM ===")
+        print("1. View tasks (Sorted by Priority)")
+        print("2. View tasks (Sorted by Date)")
+        print("3. Add new task")
+        print("4. Remove task by ID")
+        print("5. Mark task as done (and remove)")
+        print("0. Exit")
+        
+        choice = input("\nChoose an option: ")
+        
+        if choice == "1":
+            print("\n--- Tasks by Priority ---")
+            tasks = manager.list_tasks_sorted("priority")
+            for t in tasks: print(t)
+            
+        elif choice == "2":
+            print("\n--- Tasks by Date ---")
+            tasks = manager.list_tasks_sorted("date")
+            for t in tasks: print(t)
+            
+        elif choice == "3":
+            print("\n--- Creating task ---")
+            desc = input("Description: ")
+            prio = input("Priority (1-5): ")
+            current_tasks = manager.load_tasks()
+            new_id = max([t.task_id for t in current_tasks], default=0) + 1
+            manager.save_to_file(Task(new_id, desc, prio))
+            
+        elif choice == "4":
+            try:
+                t_id = int(input("Enter Task ID to remove: "))
+                manager.remove_task(t_id)
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+                
+        elif choice == "5":
+            try:
+                t_id = int(input("Enter Task ID to mark as done: "))
+                manager.complete_task(t_id)
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+                
+        elif choice == "0":
+            print("Goodbye!")
+            break
+        else:
+            print("Unknown option. Try again.")
