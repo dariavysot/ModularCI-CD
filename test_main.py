@@ -28,3 +28,29 @@ def test_save_and_load_tasks(temp_manager):
     tasks = temp_manager.load_tasks()
     assert len(tasks) == 1
     assert tasks[0].description == "Buy milk"
+
+def test_sorting_by_priority(temp_manager):
+    task1 = Task(1, "Low priority", 5)
+    task2 = Task(2, "High priority", 1)
+    temp_manager.save_to_file(task1)
+    temp_manager.save_to_file(task2)
+    
+    sorted_tasks = temp_manager.list_tasks_sorted(sort_by="priority")
+    assert sorted_tasks[0].priority == 1
+    assert sorted_tasks[1].priority == 5
+
+def test_remove_task(temp_manager):
+    task = Task(1, "To be deleted", 3)
+    temp_manager.save_to_file(task)
+    
+    temp_manager.remove_task(1)
+    tasks = temp_manager.load_tasks()
+    assert len(tasks) == 0
+
+def test_complete_task(temp_manager):
+    task = Task(10, "Task to complete", 2)
+    temp_manager.save_to_file(task)
+    
+    temp_manager.complete_task(10)
+    tasks = temp_manager.load_tasks()
+    assert len(tasks) == 0
